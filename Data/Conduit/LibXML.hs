@@ -12,7 +12,6 @@
 
 module Data.Conduit.LibXML(parseBytesIO) where
 
-import Control.Concurrent (threadDelay)
 import Control.Exception (ErrorCall(..))
 import Control.Monad (unless)
 import Control.Monad.Trans
@@ -23,8 +22,6 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.XML.Types as X
 import qualified Text.XML.LibXML.SAX as SAX
-
-import Debug.Trace
 
 setCallbacks :: Monad m => Bool -> SAX.Parser m -> (X.Event -> m Bool) -> m ()
 setCallbacks expandRefs p addEvent = do
@@ -55,8 +52,7 @@ parseBytesIO expandRefs name = do
   
   -- event storage
   eventRef <- liftIO (IO.newIORef [])
-  let addEvent e = do print "Adding Event"
-                      IO.modifyIORef eventRef (e:)
+  let addEvent e = do IO.modifyIORef eventRef (e:)
                       return True
   liftIO (setCallbacks expandRefs p addEvent)
   
@@ -73,8 +69,7 @@ parseBytesIO expandRefs name = do
 
 runParser :: (MonadResource m, MonadIO m, Show a) => (a -> m ([X.Event], Maybe Text)) -> m ([X.Event], Maybe Text) -> Conduit a m X.Event
 runParser parseChunk parseComplete = do
-  liftIO $ threadDelay (1 * 1000000)
-  val <- trace ("runParser await") await
+  val <- await
   case val of
     Just x -> do
       l <- checkEvents (parseChunk x)
@@ -91,7 +86,7 @@ runParser parseChunk parseComplete = do
         True ->
           case maybeErr of
             Nothing -> return [] --runParser parseChunk parseComplete -- continue
-            Just x -> error $ T.unpack x -- monadThrow $ ErrorCall $ T.unpack x 
+            Just x -> lift $ monadThrow $ ErrorCall $ T.unpack x 
         False -> do return events
 --                    liftIO $ print "checkEvents yield done"
 --                    runParser parseChunk parseComplete
