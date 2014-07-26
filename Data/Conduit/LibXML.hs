@@ -15,8 +15,9 @@ module Data.Conduit.LibXML(parseBytesIO) where
 import Control.Exception (ErrorCall(..))
 import Control.Monad (unless)
 import Control.Monad.Trans
+import Control.Monad.Trans.Resource
 import Data.ByteString (ByteString)
-import Data.Conduit (await,Conduit,MonadThrow, MonadResource, monadThrow,yield)
+import Data.Conduit (await,Conduit,yield)
 import qualified Data.IORef as IO
 import Data.Text (Text)
 import qualified Data.Text as T
