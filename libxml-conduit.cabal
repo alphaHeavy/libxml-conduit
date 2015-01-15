@@ -1,10 +1,10 @@
 name: libxml-conduit
-version: 0.5
+version: 0.6
 synopsis: Conduit-based API for libXML's SAX interface
 license: MIT
 author: Steve Severance (sseverance@alphaheavy.com)
 maintainer: sseverance@alphaheavy.com
-copyright: Copyright (c) Alpha Heavy Industries 2012
+copyright: Copyright (c) Alpha Heavy Industries 2012 - 2014
 build-type: Simple
 cabal-version: >=1.6
 category: Conduit, Text, XML, Parsing
@@ -15,11 +15,12 @@ library
 
   build-depends:
       base >= 4 && < 5
-    , bytestring >= 0.9 
-    , text >= 0.7 
-    , conduit
+    , bytestring >= 0.9
+    , text >= 0.7
+    , conduit >= 1.0
     , mtl
     , libxml-sax >= 0.7
+    , resourcet
     , xml-types
 
   exposed-modules:
